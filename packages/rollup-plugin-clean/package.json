@@ -1,0 +1,7 @@
+{
+    "name": "@mpen/rollup-plugin-clean",
+    "version": "0.1.0",
+    "scripts": {
+        "publish": "npm publish --ignore-scripts --access public"
+    }
+}
