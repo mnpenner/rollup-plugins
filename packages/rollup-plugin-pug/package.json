@@ -1,11 +1,12 @@
 {
-    "name": "@mpen/rollup-plugin-package",
-    "version": "0.1.0",
+    "name": "@mpen/rollup-plugin-pug",
+    "version": "0.1.3",
+    "main": "rollup-plugin-pug.js",
     "dependencies": {
         "pkg-dir": "^5.0.0",
         "pug": "^3.0.0"
     },
     "scripts": {
-        "publish": "npm publish --ignore-scripts --access public"
+        "publish": "pnpm publish --ignore-scripts --access public"
     }
 }

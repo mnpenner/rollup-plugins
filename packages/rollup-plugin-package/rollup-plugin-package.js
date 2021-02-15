@@ -1,10 +1,10 @@
-import {promises as FileSystem, constants as FileConst} from 'fs'
-import Path from 'path'
-import pkgUp from 'pkg-up'
+const {promises: FileSystem, constants: FileConst} = require('fs')
+const Path = require('path')
+const pkgUp = require('pkg-up')
 
-const COPY_FILES = ['LICENSE','README.md']
+const COPY_FILES = ['LICENSE', 'README.md']
 
-export default (pluginOptions = {}) => {
+module.exports = (pluginOptions = {}) => {
     let pkgFile;
     let pkgDir;
     let build = 0
@@ -28,7 +28,7 @@ export default (pluginOptions = {}) => {
             // console.dir(outputOptions,{depth:1,maxStringLength :32})
 
             // TODO: support publishConfig https://pnpm.js.org/en/package_json#publishconfig
-            const pkg = pick(JSON.parse(await FileSystem.readFile(pkgFile, 'utf8')),{
+            const pkg = pick(JSON.parse(await FileSystem.readFile(pkgFile, 'utf8')), {
                 // https://docs.npmjs.com/cli/v6/configuring-npm/package-json#publishconfig
                 name: Path.basename(pkgDir),
                 version: '0.1.0',
@@ -71,7 +71,7 @@ export default (pluginOptions = {}) => {
             this.emitFile({
                 type: 'asset',
                 fileName: 'package.json',
-                source: JSON.stringify(pkg,null,2),
+                source: JSON.stringify(pkg, null, 2),
             })
 
             for(const file of COPY_FILES) {
@@ -89,11 +89,11 @@ export default (pluginOptions = {}) => {
     }
 }
 
-function exists(path, mode=FileConst.R_OK) {
-    return FileSystem.access(path,mode).then(() => true, () => false)
+function exists(path, mode = FileConst.R_OK) {
+    return FileSystem.access(path, mode).then(() => true, () => false)
 }
 
-function pick(obj,defaults) {
+function pick(obj, defaults) {
     const out = Object.create(null)
     for(const k of Object.keys(defaults)) {
         out[k] = obj[k] ?? defaults[k]

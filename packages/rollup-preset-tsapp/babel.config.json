@@ -1,0 +1,33 @@
+{
+    "presets": [
+        "@babel/preset-typescript"
+    ],
+    "env": {
+        "development": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "targets": {
+                            "node": "current"
+                        },
+                        "loose": true
+                    }
+                ]
+            ]
+        },
+        "production": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "targets": {
+                            "node": "12"
+                        },
+                        "loose": true
+                    }
+                ]
+            ]
+        }
+    }
+}

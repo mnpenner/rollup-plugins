@@ -1,7 +1,7 @@
-import {promises as FileSystem} from 'fs'
-import Path from 'path'
+const {promises: FileSystem} = require('fs')
+const Path = require('path')
 
-export default (pluginOptions = {}) => ({
+module.exports = (pluginOptions = {}) => ({
     name: 'rollup-plugin-clean',
     async writeBundle(outputOptions, bundle) {
         if(!outputOptions.dir) {
@@ -45,9 +45,9 @@ export default (pluginOptions = {}) => ({
 
 
 async function* readDirR(path) {
-    const entries = await FileSystem.readdir(path,{withFileTypes:true});
+    const entries = await FileSystem.readdir(path, {withFileTypes: true});
     for(const entry of entries) {
-        const fullPath = Path.join(path,entry.name);
+        const fullPath = Path.join(path, entry.name);
         if(entry.isDirectory()) {
             yield* readDirR(fullPath);
         } else {

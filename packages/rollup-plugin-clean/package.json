@@ -1,6 +1,7 @@
 {
     "name": "@mpen/rollup-plugin-clean",
-    "version": "0.1.0",
+    "version": "0.1.3",
+    "main": "rollup-plugin-clean.js",
     "scripts": {
         "publish": "npm publish --ignore-scripts --access public"
     }

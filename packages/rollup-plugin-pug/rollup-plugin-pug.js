@@ -1,9 +1,9 @@
-import Pug from 'pug'
-import {promises as FileSystem} from 'fs'
-import pkgDir from 'pkg-dir'
-import Path from 'path'
+const Pug = require('pug')
+const {promises: FileSystem} = require('fs')
+const pkgDir = require('pkg-dir')
+const Path = require('path')
 
-export default (options = {debug: false}) => ({
+module.exports = (options = {debug: false}) => ({
     name: 'pug',
     async load(absPath) {
         if(!absPath.endsWith('.pug')) return null
