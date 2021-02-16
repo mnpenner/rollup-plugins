@@ -53,7 +53,7 @@ module.exports = function rollupPresetTsapp(opts = {}) {
         preserveSymlinks: true,  // https://www.npmjs.com/package/@rollup/plugin-commonjs#usage-with-symlinks
         preserveModules: true,  // outputs multiple files
         output: {
-            banner: `#!/usr/bin/env -S node --max-old-space-size=${opts.memory ?? 8192} --enable-source-maps`,
+            // banner: `#!/usr/bin/env -S node --max-old-space-size=${opts.memory ?? 8192} --enable-source-maps`,
             dir: 'dist',
             format: 'cjs',
             sourcemap: true,

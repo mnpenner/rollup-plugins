@@ -11,26 +11,32 @@ module.exports = (pluginOptions = {}) => ({
             return this.warn("Not cleaning; output.dir not specifeid")
         }
 
+        const outputDir = Path.relative('.', outputOptions.dir)
+
+        if(outputDir === '.' || outputDir.startsWith('..')) {
+            return this.error(`Refusing to delete "${outputDir}"`)
+        }
+
         const deleting = []
         let entries
         try {
-            entries = await FileSystem.readdir(outputOptions.dir, {withFileTypes: true});
+            entries = await FileSystem.readdir(outputDir, {withFileTypes: true});
         } catch(err) {
             if(err.code === 'ENOENT') return
             throw err
         }
 
         for(const entry of entries) {
-            const path = Path.join(outputOptions.dir, entry.name)
+            const filePath = Path.join(outputDir, entry.name)
             if(entry.isSymbolicLink() || !entry.isDirectory()) {
-                deleting.push(FileSystem.unlink(path));
+                deleting.push(FileSystem.unlink(filePath));
             } else {
-                deleting.push(FileSystem.rmdir(path));
+                deleting.push(FileSystem.rmdir(filePath, {recursive: true}));
             }
         }
 
         await Promise.allSettled(deleting)
-        log(`Deleted ${deleting.length} files from ${outputOptions.dir}`)
+        log(`Deleted ${deleting.length} files from ${outputDir}${Path.sep}`)
     }
 })
 
