@@ -1,21 +1,23 @@
-const {promises: FileSystem, constants: FileConst} = require('fs')
-const Path = require('path')
-const pkgUp = require('pkg-up')
+import type {NormalizedInputOptions, NormalizedOutputOptions, OutputBundle, Plugin, PluginContext} from 'rollup'
+import pkgUp from 'pkg-up'
+import Path from 'path'
+import {constants as FileConst, promises as FileSystem} from 'fs'
 
-const COPY_FILES = ['LICENSE', 'README.md']
+const COPY_FILES = ['LICENSE', 'README.md','pnpm-lock.yaml','yarn.lock','package-lock.json','npm-shrinkwrap.json']
 const FILE_FIELDS = ['main','module', 'browser','bin']
 const log = console.error.bind(console);
 
-module.exports = (pluginOptions = {}) => {
-    let pkgFile;
-    let pkgDir;
+const plugin: Plugin = () => {
+    let pkgFile: string;
+    let pkgDir: string;
     let build = 0
     const isWatch = process.env.ROLLUP_WATCH === 'true'
 
     return {
         name: 'rollup-plugin-package',
-        async buildStart(inputOptions) {
-            pkgFile = await pkgUp()
+        async buildStart(this: PluginContext, inputOptions: NormalizedInputOptions): Promise<void> {
+            pkgFile = await pkgUp() ?? ''
+            if(!pkgFile) throw new Error("Could not find package.json")
             pkgDir = Path.dirname(pkgFile)
             this.addWatchFile(pkgFile)
             for(const f of COPY_FILES) {
@@ -24,7 +26,7 @@ module.exports = (pluginOptions = {}) => {
 
             // console.dir(inputOptions,{depth:1,maxStringLength :32})
         },
-        async generateBundle(outputOptions, bundle, isWrite) {
+        async generateBundle(this: PluginContext, outputOptions: NormalizedOutputOptions, bundle: OutputBundle, isWrite: boolean): Promise<void> {
             if(!isWrite) return
             if(!outputOptions.dir) {
                 return this.warn("Not generating package.json; output.dir not specifeid")
@@ -37,6 +39,8 @@ module.exports = (pluginOptions = {}) => {
             // console.dir(outputOptions,{depth:1,maxStringLength :32})
 
             // TODO: support publishConfig https://pnpm.js.org/en/package_json#publishconfig
+            // debug(bundle)
+            const dependencies = new Set()
 
             const inPkg = JSON.parse(await FileSystem.readFile(pkgFile, 'utf8'))
 
@@ -76,6 +80,9 @@ module.exports = (pluginOptions = {}) => {
             // console.log(Path.basename(Path.dirname(pkgFile)))
 
             for(const chunk of Object.values(bundle)) {
+                for(const dep of chunk.imports) {
+                    dependencies.add(dep)
+                }
                 if(chunk.facadeModuleId) {
                     const facadeModuleId = Path.resolve(pkgDir, chunk.facadeModuleId)
                     for(const field of FILE_FIELDS) {
@@ -91,13 +98,24 @@ module.exports = (pluginOptions = {}) => {
                 if(chunk.isEntry) {
                     // console.dir(chunk,{depth:1,maxStringLength :32})
                     // console.log(chunk.facadeModuleId)
-                    // outPkg.main = chunk.fileName;
+                    if(!outPkg.main) {
+                        outPkg.main = chunk.fileName;
+                    }
                     const types = chunk.fileName.replace(/\.js$/, '.d.ts');
                     if(bundle[types]) {
                         outPkg.types = bundle[types].fileName
                         log(`Added package.types: ${bundle[types].fileName}`)
                     }
                     // break;
+                }
+            }
+
+            if(outPkg.dependencies) {
+                for(const mod of Object.keys(outPkg.dependencies)) {
+                    if(!dependencies.has(mod)) {
+                        delete outPkg.dependencies[mod]
+                        log(`Removed unused dependency "${mod}"`)
+                    }
                 }
             }
 
@@ -126,15 +144,15 @@ module.exports = (pluginOptions = {}) => {
     }
 }
 
-function debug(obj) {
-    console.dir(obj,{depth:1,maxStringLength :32})
+function debug(obj: any) {
+    console.dir(obj,{depth:3,maxStringLength :32})
 }
 
-function exists(path, mode = FileConst.R_OK) {
+function exists(path: string, mode = FileConst.R_OK) {
     return FileSystem.access(path, mode).then(() => true, () => false)
 }
 
-function pick(input, defaults) {
+function pick<T extends Record<string,any>>(input: Partial<T>, defaults: T): T {
     const output = Object.create(null)
     for(const k of Object.keys(defaults)) {
         const defaultValue = resolveValue(defaults[k])
@@ -150,6 +168,8 @@ function pick(input, defaults) {
     return output
 }
 
-function resolveValue(x) {
+function resolveValue(x: any) {
     return typeof x === 'function' ? x() : x
 }
+
+export default plugin

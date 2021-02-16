@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-pug",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "main": "rollup-plugin-pug.js",
     "dependencies": {
         "pkg-dir": "^5.0.0",

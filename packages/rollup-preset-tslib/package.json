@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-preset-tslib",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "main": "rollup-preset-tslib.js",
     "dependencies": {
         "@mpen/rollup-plugin-clean": "workspace:^0.1.1",
