@@ -1,57 +1,36 @@
 const {promises: FileSystem} = require('fs')
 const Path = require('path')
 
+const log = console.error.bind(console);
+
 module.exports = (pluginOptions = {}) => ({
     name: 'rollup-plugin-clean',
-    async writeBundle(outputOptions, bundle) {
+    async generateBundle(outputOptions, bundle, isWrite) {
+        if(!isWrite) return
         if(!outputOptions.dir) {
             return this.warn("Not cleaning; output.dir not specifeid")
         }
-        // console.dir(this,{depth:1})
-        // console.log(await this.resolve(outputOptions.dir))
-        // console.dir(outputOptions,{depth:1,maxStringLength :32})
-        // console.dir(bundle,{depth:1,maxStringLength :32})
-        // console.dir(bundle['index.js'].map,{depth:1,maxStringLength :32})
-        //
-        const outputFiles = new Set(Object.values(bundle).flatMap(file => {
-            const f = Path.join(outputOptions.dir, file.fileName)
-            if(file.map) {
-                return [f, f + '.map']
-            }
-            return f
-        }))
-
-        // console.log('files',files)
-
-        // console.log(bundle['index.js'].map)
-
 
         const deleting = []
+        let entries
         try {
-            for await(const file of readDirR(outputOptions.dir)) {
-                if(!outputFiles.has(file)) {
-                    console.log(`Deleting ${file}`)
-                    deleting.push(FileSystem.unlink(file))
-                }
-            }
+            entries = await FileSystem.readdir(outputOptions.dir, {withFileTypes: true});
         } catch(err) {
             if(err.code === 'ENOENT') return
             throw err
         }
 
-        return Promise.allSettled(deleting)
+        for(const entry of entries) {
+            const path = Path.join(outputOptions.dir, entry.name)
+            if(entry.isSymbolicLink() || !entry.isDirectory()) {
+                deleting.push(FileSystem.unlink(path));
+            } else {
+                deleting.push(FileSystem.rmdir(path));
+            }
+        }
+
+        await Promise.allSettled(deleting)
+        log(`Deleted ${deleting.length} files from ${outputOptions.dir}`)
     }
 })
 
-
-async function* readDirR(path) {
-    const entries = await FileSystem.readdir(path, {withFileTypes: true});
-    for(const entry of entries) {
-        const fullPath = Path.join(path, entry.name);
-        if(entry.isDirectory()) {
-            yield* readDirR(fullPath);
-        } else {
-            yield fullPath;
-        }
-    }
-}

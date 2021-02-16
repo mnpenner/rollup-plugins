@@ -4,6 +4,7 @@ const pkgUp = require('pkg-up')
 
 const COPY_FILES = ['LICENSE', 'README.md']
 const FILE_FIELDS = ['main','module', 'browser','bin']
+const log = console.error.bind(console);
 
 module.exports = (pluginOptions = {}) => {
     let pkgFile;
@@ -81,8 +82,8 @@ module.exports = (pluginOptions = {}) => {
                         if(inPkg[field]) {
                             const inputFile = Path.resolve(pkgDir, inPkg[field])
                             if(facadeModuleId === inputFile) {
-                                console.log(`Rewriting package.${field}: ${inPkg[field]} → ${chunk.fileName}`)
                                 outPkg[field] = chunk.fileName
+                                log(`Rewrote pkg["${field}"]: ${inPkg[field]} → ${chunk.fileName}`)
                             }
                         }
                     }
@@ -94,6 +95,7 @@ module.exports = (pluginOptions = {}) => {
                     const types = chunk.fileName.replace(/\.js$/, '.d.ts');
                     if(bundle[types]) {
                         outPkg.types = bundle[types].fileName
+                        log(`Added package.types: ${bundle[types].fileName}`)
                     }
                     // break;
                 }
@@ -113,6 +115,7 @@ module.exports = (pluginOptions = {}) => {
                         fileName: file,
                         source: license,
                     })
+                    log(`Copied ${file} → ${Path.join(outputOptions.dir, file)}`)
                 } catch(err) {
                     if(err.code !== 'ENOENT') {
                         return this.error(err)

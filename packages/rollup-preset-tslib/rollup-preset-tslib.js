@@ -13,10 +13,12 @@ const {readFileSync} = require('fs');
 module.exports = function rollupPresetTslib(opts = {}) {
     const tsconfigFile = findUp.sync(opts.tsconfig ?? 'tsconfig.json')
     const tsconfig = JSON.parse(readFileSync(tsconfigFile))
+    const isWatch = process.env.ROLLUP_WATCH === 'true'
 
     return {
         input: tsconfig.files,
         plugins: [
+            !isWatch && cleanPlugin(),
             commonjs({
                 include: 'node_modules/**',
             }),
@@ -36,8 +38,7 @@ module.exports = function rollupPresetTslib(opts = {}) {
             nodeResolve({
                 extensions: ['.ts', '.json']
             }),
-            packagePlugin(),
-            cleanPlugin(),
+            !isWatch && packagePlugin(),
             ...opts.plugins ?? [],
         ],
         watch: {
