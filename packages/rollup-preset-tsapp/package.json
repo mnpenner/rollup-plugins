@@ -1,10 +1,12 @@
 {
     "name": "@mpen/rollup-preset-tsapp",
     "version": "0.1.5",
-    "main": "dist/index.js",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
+    "main": "dist/rollup-preset-tsapp.js",
+    "module": "dist/rollup-preset-tsapp.mjs",
+    "types": "dist/rollup-preset-tsapp.d.ts",
     "dependencies": {
+        "@mpen/rollup-plugin-clean": "workspace:*",
+        "@mpen/rollup-plugin-package": "workspace:*",
         "@rollup/plugin-babel": "^5.3.0",
         "@rollup/plugin-commonjs": "^17.1.0",
         "@rollup/plugin-json": "^4.1.0",

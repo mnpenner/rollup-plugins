@@ -1,13 +1,12 @@
 import {promises as FileSystem} from 'fs'
 import Path from 'path'
 import type {Plugin} from 'rollup'
-import {NormalizedOutputOptions, OutputBundle, PluginContext} from 'rollup'
 
 const log = console.error.bind(console)
 
-const plugin: Plugin = () => ({
+const plugin = (): Plugin => ({
     name: 'rollup-plugin-clean',
-    async generateBundle(this: PluginContext, outputOptions: NormalizedOutputOptions, bundle: OutputBundle, isWrite: boolean): Promise<void> {
+    async generateBundle(outputOptions, bundle, isWrite) {
         if (!isWrite) return
         if (!outputOptions.dir) {
             return this.warn("Not cleaning; output.dir not specifeid")

@@ -33,6 +33,8 @@ importers:
       pug: ^3.0.0
   packages/rollup-preset-tsapp:
     dependencies:
+      '@mpen/rollup-plugin-clean': link:../rollup-plugin-clean
+      '@mpen/rollup-plugin-package': link:../rollup-plugin-package
       '@rollup/plugin-babel': 5.3.0_4d4951a2c09e717687c6a23a85fa0df3
       '@rollup/plugin-commonjs': 17.1.0_rollup@2.39.0
       '@rollup/plugin-json': 4.1.0_rollup@2.39.0
@@ -55,6 +57,8 @@ importers:
       '@babel/core': ^7.12.16
       '@babel/preset-env': ^7.12.16
       '@babel/preset-typescript': ^7.12.16
+      '@mpen/rollup-plugin-clean': workspace:*
+      '@mpen/rollup-plugin-package': workspace:*
       '@mpen/rollup-preset-tsapp': workspace:^0.1.5
       '@rollup/plugin-babel': ^5.3.0
       '@rollup/plugin-commonjs': ^17.1.0

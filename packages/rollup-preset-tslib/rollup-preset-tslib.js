@@ -32,7 +32,9 @@ module.exports = function rollupPresetTslib(opts = {}) {
             json(),
             typescript({
                 abortOnError: process.env.NODE_ENV === 'production',
+                tsconfigDefaults: {},
                 tsconfig: tsconfigFile,
+                tsconfigOverride: {},
                 ...opts.typescriptOptions,
             }),
             nodeResolve({

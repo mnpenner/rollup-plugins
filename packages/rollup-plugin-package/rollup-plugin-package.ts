@@ -7,7 +7,7 @@ const COPY_FILES = ['LICENSE', 'README.md','pnpm-lock.yaml','yarn.lock','package
 const FILE_FIELDS = ['main','module', 'browser','bin']
 const log = console.error.bind(console);
 
-const plugin: Plugin = () => {
+const plugin = (): Plugin => {
     let pkgFile: string;
     let pkgDir: string;
     let build = 0
@@ -15,7 +15,7 @@ const plugin: Plugin = () => {
 
     return {
         name: 'rollup-plugin-package',
-        async buildStart(this: PluginContext, inputOptions: NormalizedInputOptions): Promise<void> {
+        async buildStart(inputOptions) {
             pkgFile = await pkgUp() ?? ''
             if(!pkgFile) throw new Error("Could not find package.json")
             pkgDir = Path.dirname(pkgFile)

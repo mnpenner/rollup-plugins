@@ -10,9 +10,6 @@
         "declaration": true
     },
     "files": [
-        "src/rollup-preset-tsapp.ts"
-    ],
-    "include": [
-        "src/**/*.d.ts"
+        "rollup-preset-tsapp.ts"
     ]
 }
