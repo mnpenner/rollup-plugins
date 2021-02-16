@@ -1,8 +1,11 @@
-const babel = require('@rollup/plugin-babel');
-const nodeResolve = require('@rollup/plugin-node-resolve');
+const {babel} = require('@rollup/plugin-babel');
+const {nodeResolve} = require('@rollup/plugin-node-resolve');
 const nodeExternals = require('rollup-plugin-node-externals');
 const json = require('@rollup/plugin-json');
 const commonjs = require('@rollup/plugin-commonjs');
+const findUp = require('find-up');
+const {readFileSync} = require('fs');
+const packagePlugin = require('@mpen/rollup-plugin-package');
 
 // see also: https://github.com/rollup/rollup-starter-app
 
@@ -36,6 +39,7 @@ module.exports = function rollupPresetTsapp(opts = {}) {
                 extensions,
                 preferBuiltins: true
             }),
+            packagePlugin(),
         ],
         output: {
             banner: `#!/usr/bin/env -S node --max-old-space-size=${opts.memory ?? 8192} --enable-source-maps`,

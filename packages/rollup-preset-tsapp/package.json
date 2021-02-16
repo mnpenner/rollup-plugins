@@ -1,8 +1,9 @@
 {
-    "name": "@mpen/rollup-preset-app",
+    "name": "@mpen/rollup-preset-tsapp",
     "version": "0.1.4",
-    "main": "rollup-preset-app.js",
+    "main": "rollup-preset-tsapp.js",
     "dependencies": {
+        "@babel/core": "^7.12.16",
         "@babel/preset-env": "^7.12.16",
         "@babel/preset-typescript": "^7.12.16",
         "@mpen/rollup-plugin-clean": "workspace:^0.1.1",
