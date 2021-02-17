@@ -77,6 +77,9 @@ export default function run(opts: RollupRunOptions = {}): Plugin {
             lastInt = now
         }
     })
+    // TODO: map UP to Ctrl+P (previous history item)
+    // TODO: map DOWN to Ctrl+N (previous history item)
+    // TODO: use ctrl+r to restart the process with the same args
 
     return {
         name: 'run',
