@@ -7,6 +7,7 @@ import findUp from 'find-up'
 import {readFileSync} from 'fs'
 import packagePlugin from '@mpen/rollup-plugin-package'
 import cleanPlugin from '@mpen/rollup-plugin-clean'
+import runPlugin from '@mpen/rollup-plugin-run'
 // import renameNodeModules from 'rollup-plugin-rename-node-modules'
 import type {RollupOptions, WatcherOptions} from 'rollup'
 
@@ -61,9 +62,11 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
             }),
             // renameNodeModules('external'),
             !isWatch && packagePlugin(),
+            isWatch && runPlugin(),
         ].filter(truthy),
         watch: {
             buildDelay: 200,
+            clearScreen: false,
             ...opts.watch,
         },
         preserveSymlinks: true,  // https://www.npmjs.com/package/@rollup/plugin-commonjs#usage-with-symlinks

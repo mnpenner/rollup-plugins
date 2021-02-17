@@ -1,0 +1,27 @@
+{
+    "name": "@mpen/rollup-plugin-run",
+    "version": "0.1.6",
+    "main": "dist/rollup-plugin-run.js",
+    "module": "dist/rollup-plugin-run.mjs",
+    "types": "dist/rollup-plugin-run.d.ts",
+    "scripts": {
+        "prebuild": "rm -rf dist",
+        "build": "rollup -c",
+        "prepack": "npm run build"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "dependencies": {
+        "chalk": "^4.1.0",
+        "rollup-plugin-typescript2": "^0.29.0"
+    },
+    "devDependencies": {
+        "rollup": "^2.39.0",
+        "typescript": "^4.1.5"
+    },
+    "peerDependencies": {
+        "rollup": "^2.39.0",
+        "typescript": "^4.1.5"
+    }
+}

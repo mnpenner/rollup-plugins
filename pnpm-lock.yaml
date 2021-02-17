@@ -38,10 +38,23 @@ importers:
       pug: ^3.0.0
       rimraf: ^3.0.2
       rollup: ^2.39.0
+  packages/rollup-plugin-run:
+    dependencies:
+      chalk: 4.1.0
+      rollup-plugin-typescript2: 0.29.0_rollup@2.39.0+typescript@4.1.5
+    devDependencies:
+      rollup: 2.39.0
+      typescript: 4.1.5
+    specifiers:
+      chalk: ^4.1.0
+      rollup: ^2.39.0
+      rollup-plugin-typescript2: ^0.29.0
+      typescript: ^4.1.5
   packages/rollup-preset-tsapp:
     dependencies:
       '@mpen/rollup-plugin-clean': link:../rollup-plugin-clean
       '@mpen/rollup-plugin-package': link:../rollup-plugin-package
+      '@mpen/rollup-plugin-run': link:../rollup-plugin-run
       '@rollup/plugin-babel': 5.3.0_4d4951a2c09e717687c6a23a85fa0df3
       '@rollup/plugin-commonjs': 17.1.0_rollup@2.39.0
       '@rollup/plugin-json': 4.1.0_rollup@2.39.0
@@ -66,6 +79,7 @@ importers:
       '@babel/preset-typescript': ^7.12.16
       '@mpen/rollup-plugin-clean': workspace:*
       '@mpen/rollup-plugin-package': workspace:*
+      '@mpen/rollup-plugin-run': workspace:*
       '@mpen/rollup-preset-tsapp': workspace:^0.1.5
       '@rollup/plugin-babel': ^5.3.0
       '@rollup/plugin-commonjs': ^17.1.0
@@ -1506,7 +1520,6 @@ packages:
   /ansi-styles/4.3.0:
     dependencies:
       color-convert: 2.0.1
-    dev: true
     engines:
       node: '>=8'
     resolution:
@@ -1845,7 +1858,6 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
-    dev: true
     engines:
       node: '>=10'
     resolution:
@@ -1918,7 +1930,6 @@ packages:
   /color-convert/2.0.1:
     dependencies:
       color-name: 1.1.4
-    dev: true
     engines:
       node: '>=7.0.0'
     resolution:
@@ -1928,7 +1939,6 @@ packages:
     resolution:
       integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=
   /color-name/1.1.4:
-    dev: true
     resolution:
       integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
   /colorette/1.2.1:
@@ -2569,7 +2579,6 @@ packages:
     resolution:
       integrity: sha1-tdRU3CGZriJWmfNGfloH87lVuv0=
   /has-flag/4.0.0:
-    dev: true
     engines:
       node: '>=8'
     resolution:
@@ -4752,7 +4761,6 @@ packages:
   /supports-color/7.2.0:
     dependencies:
       has-flag: 4.0.0
-    dev: true
     engines:
       node: '>=8'
     resolution:
