@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-preset-tsapp",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "main": "dist/rollup-preset-tsapp.js",
     "module": "dist/rollup-preset-tsapp.mjs",
     "types": "dist/rollup-preset-tsapp.d.ts",

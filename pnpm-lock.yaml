@@ -28,9 +28,16 @@ importers:
     dependencies:
       pkg-dir: 5.0.0
       pug: 3.0.0
+    devDependencies:
+      '@types/pug': 2.0.4
+      rimraf: 3.0.2
+      rollup: 2.39.0
     specifiers:
+      '@types/pug': ^2.0.4
       pkg-dir: ^5.0.0
       pug: ^3.0.0
+      rimraf: ^3.0.2
+      rollup: ^2.39.0
   packages/rollup-preset-tsapp:
     dependencies:
       '@mpen/rollup-plugin-clean': link:../rollup-plugin-clean
@@ -1418,6 +1425,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-DxZZbyMAM9GWEzXL+BMZROWz9oo6A9EilwwOMET2UVu2uZTqMWS5S69KVtuVKaRjCUpcrOXRalet86/OpG4kqw==
+  /@types/pug/2.0.4:
+    dev: true
+    resolution:
+      integrity: sha1-h3L80EGOPNLMFxVV1zAHQVBR9LI=
   /@types/resolve/1.17.1:
     dependencies:
       '@types/node': 14.14.28

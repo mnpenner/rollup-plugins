@@ -1,7 +1,9 @@
 {
     "name": "@mpen/rollup-preset-tslib",
     "version": "0.1.5",
-    "main": "rollup-preset-tslib.js",
+    "main": "dist/rollup-preset-tslib.js",
+    "module": "dist/rollup-preset-tslib.mjs",
+    "types": "dist/rollup-preset-tslib.d.ts",
     "dependencies": {
         "@mpen/rollup-plugin-clean": "workspace:^0.1.1",
         "@mpen/rollup-plugin-package": "workspace:^0.1.1",
@@ -13,7 +15,12 @@
         "rollup-plugin-typescript2": "^0.29.0"
     },
     "scripts": {
-        "publish": "pnpm publish --ignore-scripts --access public"
+        "prebuild": "rm -rf dist",
+        "build": "rollup -c",
+        "prepack": "npm run build"
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "devDependencies": {
         "builtin-modules": "^3.2.0",

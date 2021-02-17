@@ -1,12 +1,27 @@
 {
     "name": "@mpen/rollup-plugin-pug",
-    "version": "0.1.4",
-    "main": "rollup-plugin-pug.js",
+    "version": "0.1.5",
+    "main": "dist/rollup-plugin-pug.js",
+    "module": "dist/rollup-plugin-pug.mjs",
+    "types": "dist/rollup-plugin-pug.d.ts",
     "dependencies": {
         "pkg-dir": "^5.0.0",
         "pug": "^3.0.0"
     },
     "scripts": {
-        "publish": "pnpm publish --ignore-scripts --access public"
+        "prebuild": "rimraf dist",
+        "build": "rollup -c",
+        "prepack": "npm run build"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "devDependencies": {
+        "@types/pug": "^2.0.4",
+        "rimraf": "^3.0.2",
+        "rollup": "^2.39.0"
+    },
+    "peerDependencies": {
+        "rollup": "^2.39.0"
     }
 }

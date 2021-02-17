@@ -18,6 +18,12 @@ interface RollupPresetTsappOptions {
     watch?: WatcherOptions
 }
 
+type Truthy<T> = T extends false | '' | 0 | null | undefined ? never : T;  // https://stackoverflow.com/a/58110124/65387
+
+function truthy<T>(value: T): value is Truthy<T> {
+    return Boolean(value);
+}
+
 export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): RollupOptions {
     const tsconfigFile = findUp.sync(opts.tsconfig ?? 'tsconfig.json')
     if(!tsconfigFile) throw new Error('tsconfig.json file not found')
@@ -34,12 +40,12 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
             }),
             nodeExternals({
                 builtins: true,
-                deps: true,
-                devDeps: false,
+                deps: isWatch,
+                devDeps: isWatch,
                 peerDeps: true,
                 optDeps: true,
             }),
-            json(),
+            json({preferConst: true}),
             babel({
                 include: 'src/**',
                 extensions,
@@ -51,11 +57,11 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
             }),
             nodeResolve({
                 extensions,
-                preferBuiltins: true
+                // preferBuiltins: true
             }),
             // renameNodeModules('external'),
             !isWatch && packagePlugin(),
-        ],
+        ].filter(truthy),
         watch: {
             buildDelay: 200,
             ...opts.watch,

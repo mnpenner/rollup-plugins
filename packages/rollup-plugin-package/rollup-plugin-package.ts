@@ -1,4 +1,4 @@
-import type {NormalizedInputOptions, NormalizedOutputOptions, OutputBundle, Plugin, PluginContext} from 'rollup'
+import type {NormalizedOutputOptions, OutputBundle, Plugin, PluginContext} from 'rollup'
 import pkgUp from 'pkg-up'
 import Path from 'path'
 import {constants as FileConst, promises as FileSystem} from 'fs'
@@ -6,6 +6,44 @@ import {constants as FileConst, promises as FileSystem} from 'fs'
 const COPY_FILES = ['LICENSE', 'README.md','pnpm-lock.yaml','yarn.lock','package-lock.json','npm-shrinkwrap.json']
 const FILE_FIELDS = ['main','module', 'browser','bin']
 const log = console.error.bind(console);
+
+
+interface Person {
+    name: string
+    email: string
+    url?: string
+}
+
+interface PackageJson {
+    name?: string
+    version?: string
+    description?: string
+    license?: string
+    engines?: any
+    enginesStrict?: any
+    os?: any
+    cpu?: any
+    author?: string|Person
+    contributors?: Array<string|Person>
+    funding?: any
+    bugs?: any
+    homepage?: any
+    repository?: any
+    keywords?: any
+    bin?: string
+    main?: string
+    browser?: string
+    types?: string
+
+    dependencies?: Record<string,string>
+    peerDependencies?: Record<string,string>
+    devDependencies?: Record<string,string>
+    optionalDependencies?: Record<string,string>
+    publishConfig?: Record<string,string>
+    bundledDependencies?: string[]
+
+    [x:string]: any
+}
 
 const plugin = (): Plugin => {
     let pkgFile: string;
@@ -44,7 +82,7 @@ const plugin = (): Plugin => {
 
             const inPkg = JSON.parse(await FileSystem.readFile(pkgFile, 'utf8'))
 
-            const outPkg = pick(inPkg, {
+            const outPkg: PackageJson = pick(inPkg, {
                 name: () => Path.basename(pkgDir),
                 version: '0.1.0',
                 description: undefined,
@@ -80,33 +118,35 @@ const plugin = (): Plugin => {
             // console.log(Path.basename(Path.dirname(pkgFile)))
 
             for(const chunk of Object.values(bundle)) {
-                for(const dep of chunk.imports) {
-                    dependencies.add(dep)
-                }
-                if(chunk.facadeModuleId) {
-                    const facadeModuleId = Path.resolve(pkgDir, chunk.facadeModuleId)
-                    for(const field of FILE_FIELDS) {
-                        if(inPkg[field]) {
-                            const inputFile = Path.resolve(pkgDir, inPkg[field])
-                            if(facadeModuleId === inputFile) {
-                                outPkg[field] = chunk.fileName
-                                log(`Rewrote pkg["${field}"]: ${inPkg[field]} → ${chunk.fileName}`)
+                if(chunk.type === 'chunk') {
+                    for (const dep of chunk.imports) {
+                        dependencies.add(dep)
+                    }
+                    if (chunk.facadeModuleId) {
+                        const facadeModuleId = Path.resolve(pkgDir, chunk.facadeModuleId)
+                        for (const field of FILE_FIELDS) {
+                            if (inPkg[field]) {
+                                const inputFile = Path.resolve(pkgDir, inPkg[field])
+                                if (facadeModuleId === inputFile) {
+                                    outPkg[field] = chunk.fileName
+                                    log(`Rewrote pkg["${field}"]: ${inPkg[field]} → ${chunk.fileName}`)
+                                }
                             }
                         }
                     }
-                }
-                if(chunk.isEntry) {
-                    // console.dir(chunk,{depth:1,maxStringLength :32})
-                    // console.log(chunk.facadeModuleId)
-                    if(!outPkg.main) {
-                        outPkg.main = chunk.fileName;
+                    if (chunk.isEntry) {
+                        // console.dir(chunk,{depth:1,maxStringLength :32})
+                        // console.log(chunk.facadeModuleId)
+                        if (!outPkg.main) {
+                            outPkg.main = chunk.fileName;
+                        }
+                        const types = chunk.fileName.replace(/\.js$/, '.d.ts');
+                        if (bundle[types]) {
+                            outPkg.types = bundle[types].fileName
+                            log(`Added package.types: ${bundle[types].fileName}`)
+                        }
+                        // break;
                     }
-                    const types = chunk.fileName.replace(/\.js$/, '.d.ts');
-                    if(bundle[types]) {
-                        outPkg.types = bundle[types].fileName
-                        log(`Added package.types: ${bundle[types].fileName}`)
-                    }
-                    // break;
                 }
             }
 
@@ -152,7 +192,7 @@ function exists(path: string, mode = FileConst.R_OK) {
     return FileSystem.access(path, mode).then(() => true, () => false)
 }
 
-function pick<T extends Record<string,any>>(input: Partial<T>, defaults: T): T {
+function pick(input: any, defaults: any): any {
     const output = Object.create(null)
     for(const k of Object.keys(defaults)) {
         const defaultValue = resolveValue(defaults[k])
