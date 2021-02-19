@@ -8,6 +8,7 @@ import {readFileSync} from 'fs'
 import packagePlugin from '@mpen/rollup-plugin-package'
 import cleanPlugin from '@mpen/rollup-plugin-clean'
 import runPlugin from '@mpen/rollup-plugin-run'
+import execPlugin, {RollupPluginExecutableOptions} from '@mpen/rollup-plugin-executable'
 // import renameNodeModules from 'rollup-plugin-rename-node-modules'
 import type {RollupOptions, WatcherOptions} from 'rollup'
 
@@ -17,6 +18,7 @@ interface RollupPresetTsappOptions {
     tsconfig?: string
     babelOptions?: RollupBabelInputPluginOptions
     watch?: WatcherOptions
+    nodeOptions?: RollupPluginExecutableOptions
 }
 
 type Truthy<T> = T extends false | '' | 0 | null | undefined ? never : T;  // https://stackoverflow.com/a/58110124/65387
@@ -29,16 +31,14 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
     const tsconfigFile = findUp.sync(opts.tsconfig ?? 'tsconfig.json')
     if(!tsconfigFile) throw new Error('tsconfig.json file not found')
     const tsconfig = JSON.parse(readFileSync(tsconfigFile, 'utf8'))
-    const extensions = ['.ts'];
+    const extensions = ['.ts', '.mjs', '.js', '.json', '.node'];
     const isWatch = process.env.ROLLUP_WATCH === 'true'
 
     return {
         input: tsconfig.files,
+        context: 'global',  // https://nodejs.org/api/globals.html#globals_global
         plugins: [
             !isWatch && cleanPlugin(),
-            commonjs({
-                include: 'node_modules/**',
-            }),
             nodeExternals({
                 builtins: true,
                 deps: isWatch,
@@ -46,9 +46,16 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
                 peerDeps: true,
                 optDeps: true,
             }),
+            nodeResolve({
+                extensions,
+                preferBuiltins: true,
+            }),
+            commonjs({
+                include: 'node_modules/**',
+            }),
             json({preferConst: true}),
             babel({
-                include: 'src/**',
+                exclude: 'node_modules/**',
                 extensions,
                 comments: false,
                 babelHelpers: 'bundled',  // https://github.com/rollup/plugins/tree/master/packages/babel#babelhelpers
@@ -56,9 +63,10 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
                 // babelrcRoots: ['.', __dirname],  // https://babeljs.io/docs/en/options#babelrcroots
                 ...opts.babelOptions,
             }),
-            nodeResolve({
-                extensions,
-                // preferBuiltins: true
+            execPlugin({
+                maxOldSpaceSize: 4*1024,
+                enableSourceMaps: true,
+                ...opts.nodeOptions,
             }),
             // renameNodeModules('external'),
             !isWatch && packagePlugin(),

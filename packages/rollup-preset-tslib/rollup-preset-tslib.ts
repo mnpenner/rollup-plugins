@@ -56,7 +56,7 @@ export default function rollupPresetTslib(opts: RollupPresetTslibOptions = {}): 
             }),
             nodeResolve({
                 extensions: ['.ts'],
-                // preferBuiltins: true,
+                preferBuiltins: true,
             }),
             !isWatch && packagePlugin(),
             ...opts.plugins ?? [],
