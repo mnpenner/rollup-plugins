@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-run",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "main": "dist/rollup-plugin-run.js",
     "module": "dist/rollup-plugin-run.mjs",
     "types": "dist/rollup-plugin-run.d.ts",

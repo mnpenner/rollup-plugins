@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-pug",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "main": "dist/rollup-plugin-pug.js",
     "module": "dist/rollup-plugin-pug.mjs",
     "types": "dist/rollup-plugin-pug.d.ts",

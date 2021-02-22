@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-executable",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "main": "dist/rollup-plugin-executable.js",
     "module": "dist/rollup-plugin-executable.mjs",
     "types": "dist/rollup-plugin-executable.d.ts",

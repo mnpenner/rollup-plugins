@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-preset-tslib",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "main": "dist/rollup-preset-tslib.js",
     "module": "dist/rollup-preset-tslib.mjs",
     "types": "dist/rollup-preset-tslib.d.ts",
