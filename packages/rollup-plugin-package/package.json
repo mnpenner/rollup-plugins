@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-package",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "main": "dist/rollup-plugin-package.js",
     "module": "dist/rollup-plugin-package.mjs",
     "types": "dist/rollup-plugin-package.d.ts",
@@ -20,5 +20,8 @@
     },
     "dependencies": {
         "pkg-up": "^3.1.0"
+    },
+    "repository": {
+        "url": "https://github.com/mnpenner/rollup-plugins/tree/default/packages/rollup-plugin-package"
     }
 }

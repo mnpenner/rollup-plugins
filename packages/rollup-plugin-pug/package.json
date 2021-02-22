@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-pug",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "main": "dist/rollup-plugin-pug.js",
     "module": "dist/rollup-plugin-pug.mjs",
     "types": "dist/rollup-plugin-pug.d.ts",
@@ -23,5 +23,8 @@
     },
     "peerDependencies": {
         "rollup": "^2.39.0"
+    },
+    "repository": {
+        "url": "https://github.com/mnpenner/rollup-plugins/tree/default/packages/rollup-plugin-pug"
     }
 }

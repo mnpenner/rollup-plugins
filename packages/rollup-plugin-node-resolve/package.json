@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-node-resolve",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "main": "dist/rollup-plugin-node-resolve.js",
     "module": "dist/rollup-plugin-node-resolve.mjs",
     "types": "dist/rollup-plugin-node-resolve.d.ts",
@@ -24,5 +24,8 @@
     "dependencies": {
         "builtin-modules": "^3.2.0",
         "magic-string": "^0.25.7"
+    },
+    "repository": {
+        "url": "https://github.com/mnpenner/rollup-plugins/tree/default/packages/rollup-plugin-resolve"
     }
 }
