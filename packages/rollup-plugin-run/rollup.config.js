@@ -16,7 +16,7 @@ export default {
             exports: "auto",
         },
     ],
-    external: ['path','child_process', ...Object.keys(pkg.dependencies ?? {})],
+    external: ['path','child_process','readline', ...Object.keys(pkg.dependencies ?? {})],
     plugins: [typescript({
         abortOnError: false,
     })],

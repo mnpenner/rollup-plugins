@@ -36,6 +36,8 @@ export default function run(opts: RollupRunOptions = {}): Plugin {
             proc.kill()
             proc = null
         }
+
+        // TODO: stream stdout instead of waiting for process to complete (and fix chalk/coloring)
         proc = exec(`${cmdPrefix} ${additionalArgs}`, {}, (error, stdout, stderr) => {
             proc = null
             // TODO: figure out how to clear prompt
@@ -50,14 +52,7 @@ export default function run(opts: RollupRunOptions = {}): Plugin {
             rl.write(additionalArgs)
         })
     })
-    let lastInt: number|null = null
     rl.on('SIGINT', () => {
-        const now = Date.now()
-        if(lastInt != null && (now - lastInt) < ESCAPE_TIMEOUT && !rl.line) {
-            console.log(`\n🛑 Exiting`)
-            process.exit(0)
-            // rl.write(null as any, {ctrl:true,name:'c'})
-        }
         if(proc) {
             proc.kill()
             proc = null
@@ -68,13 +63,10 @@ export default function run(opts: RollupRunOptions = {}): Plugin {
             // https://nodejs.org/dist/latest-v14.x/docs/api/readline.html#readline_tty_keybindings
             rl.write(null as any, {ctrl:true,name:'e'})
             rl.write(null as any, {ctrl:true,name:'u'})
-            // rl.write(null as any, {ctrl:true,name:'c'})
         } else {
             // rl.write(null as any, {ctrl:true,name:'c'})
-            // console.log(`\nExiting`)
-            // process.exit(0)
-            rl.write(null as any, {ctrl:true,name:'l'})
-            lastInt = now
+            console.log(`\n🛑 Exiting`)
+            process.exit(0)
         }
     })
     // TODO: map UP to Ctrl+P (previous history item)
