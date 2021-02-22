@@ -1,5 +1,6 @@
 import {babel, RollupBabelInputPluginOptions} from '@rollup/plugin-babel'
-import {nodeResolve} from '@rollup/plugin-node-resolve'
+// import {nodeResolve} from '@rollup/plugin-node-resolve'
+import nodeResolve from '@mpen/rollup-plugin-node-resolve'
 import nodeExternals from 'rollup-plugin-node-externals'
 import json from '@rollup/plugin-json'
 import commonjs from '@rollup/plugin-commonjs'
@@ -46,12 +47,12 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
                 peerDeps: true,
                 optDeps: true,
             }),
+            commonjs({
+                // include: 'node_modules/**',
+            }),
             nodeResolve({
                 extensions,
                 preferBuiltins: true,
-            }),
-            commonjs({
-                include: 'node_modules/**',
             }),
             json({preferConst: true}),
             babel({
@@ -78,7 +79,7 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
             ...opts.watch,
         },
         preserveSymlinks: true,  // https://www.npmjs.com/package/@rollup/plugin-commonjs#usage-with-symlinks
-        preserveModules: false,  // outputs multiple files; https://stackoverflow.com/questions/66219812/force-include-node-modules-in-package  https://github.com/rollup/rollup/issues/3684
+        preserveModules: true,  // outputs multiple files; https://stackoverflow.com/questions/66219812/force-include-node-modules-in-package  https://github.com/rollup/rollup/issues/3684
         output: {
             // banner: `#!/usr/bin/env -S node --max-old-space-size=${opts.memory ?? 8192} --enable-source-maps`,
             dir: 'dist',
