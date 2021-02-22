@@ -45,7 +45,11 @@ interface PackageJson {
     [x:string]: any
 }
 
-const plugin = (): Plugin => {
+export interface RollupPluginPackageOptions {
+    bin?: boolean
+}
+
+const plugin = (opts: RollupPluginPackageOptions = {}): Plugin => {
     let pkgFile: string;
     let pkgDir: string;
     let build = 0
@@ -137,8 +141,14 @@ const plugin = (): Plugin => {
                     if (chunk.isEntry) {
                         // console.dir(chunk,{depth:1,maxStringLength :32})
                         // console.log(chunk.facadeModuleId)
-                        if (!outPkg.main) {
-                            outPkg.main = chunk.fileName;
+                        if (opts.bin) {
+                            if (!outPkg.bin) {
+                                outPkg.bin = chunk.fileName
+                            }
+                        } else {
+                            if (!outPkg.main) {
+                                outPkg.main = chunk.fileName
+                            }
                         }
                         const types = chunk.fileName.replace(/\.js$/, '.d.ts');
                         if (bundle[types]) {

@@ -51,13 +51,13 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
                 // include: 'node_modules/**',
             }),
             nodeResolve({
-                extensions,
-                preferBuiltins: true,
+                extensions: extensions,
+                // preferBuiltins: true,
             }),
             json({preferConst: true}),
             babel({
                 exclude: 'node_modules/**',
-                extensions,
+                extensions: extensions,
                 comments: false,
                 babelHelpers: 'bundled',  // https://github.com/rollup/plugins/tree/master/packages/babel#babelhelpers
                 root: `${__dirname}/..`,
@@ -66,11 +66,11 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
             }),
             execPlugin({
                 maxOldSpaceSize: 4*1024,
-                enableSourceMaps: true,
+                enableSourceMaps: isWatch,
                 ...opts.nodeOptions,
             }),
             // renameNodeModules('external'),
-            !isWatch && packagePlugin(),
+            !isWatch && packagePlugin({bin: true}),
             isWatch && runPlugin(),
         ].filter(truthy),
         watch: {
@@ -84,7 +84,7 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
             // banner: `#!/usr/bin/env -S node --max-old-space-size=${opts.memory ?? 8192} --enable-source-maps`,
             dir: 'dist',
             format: 'cjs',
-            sourcemap: true,
+            sourcemap: isWatch,
             exports: 'named',
         },
     }

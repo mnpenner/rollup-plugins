@@ -23,9 +23,13 @@ export default function (opts: RollupPluginNodeResolveOptions = {}): Plugin {
         async resolveId(importee, importer, opts) {
             // https://nodejs.org/api/modules.html#modules_all_together
 
-            if (/^\x00/.test(importee) || builtins.has(importee)) {
+            if (/^\x00/.test(importee)) {
                 // https://github.com/rollup/plugins/blob/6bee5980155df7b73cfbd9746556517c8d7f0ad7/packages/node-resolve/src/index.js#L98
-                return null
+                return null  // defer to other resolveId functions
+            }
+
+            if(builtins.has(importee)) {
+                return false  // mark as external
             }
 
             if (importer && /^\x00/.test(importer)) {
@@ -46,6 +50,7 @@ export default function (opts: RollupPluginNodeResolveOptions = {}): Plugin {
                     const stat = await fileStat(fullPath)
                     if (stat) {
                         if (stat.isDirectory()) {
+                            // TODO: technically we should look for a package.json in this dir
                             for (const ext of extensions) {
                                 const pathWithExt = Path.join(fullPath, 'index' + ext)
                                 if (await fileStat(pathWithExt)) {
@@ -63,8 +68,10 @@ export default function (opts: RollupPluginNodeResolveOptions = {}): Plugin {
                         }
                     }
 
-                    // console.log(importee,importer,importPath)
-                    return false
+                    throw new Error(importer
+                        ? `Could not resolve "${importee}" imported by "${importer}"`
+                        : `Could not resolve entry point "${importee}" relative to "${rootDir}"`
+                    )
                 }
 
                 // TODO: prefer loading "module" instead of "main"
