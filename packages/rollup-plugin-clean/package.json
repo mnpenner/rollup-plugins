@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-clean",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "main": "dist/rollup-plugin-clean.js",
     "module": "dist/rollup-plugin-clean.mjs",
     "types": "dist/rollup-plugin-clean.d.ts",

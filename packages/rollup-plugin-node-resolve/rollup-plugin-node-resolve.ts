@@ -47,6 +47,13 @@ export default function (opts: RollupPluginNodeResolveOptions = {}): Plugin {
             const resolved = await (async () => {
                 if (/^\.{0,2}\//.test(importee)) {  // relative path
                     const fullPath = Path.resolve(baseDir, importee)
+                    for (const ext of extensions) {
+                        // Try file extensions before directories: https://mpen.xyz/share/2021/03/phpstorm64_2021-03-13_12-48-06.png
+                        const pathWithExt = fullPath + ext
+                        if (await fileStat(pathWithExt)) {
+                            return pathWithExt
+                        }
+                    }
                     const stat = await fileStat(fullPath)
                     if (stat) {
                         if (stat.isDirectory()) {
@@ -61,12 +68,7 @@ export default function (opts: RollupPluginNodeResolveOptions = {}): Plugin {
                         }
                         return fullPath
                     }
-                    for (const ext of extensions) {
-                        const pathWithExt = fullPath + ext
-                        if (await fileStat(pathWithExt)) {
-                            return pathWithExt
-                        }
-                    }
+
 
                     throw new Error(importer
                         ? `Could not resolve "${importee}" imported by "${importer}"`

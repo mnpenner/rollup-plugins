@@ -1,6 +1,6 @@
 {
     "name": "@mpen/rollup-plugin-node-resolve",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "main": "dist/rollup-plugin-node-resolve.js",
     "module": "dist/rollup-plugin-node-resolve.mjs",
     "types": "dist/rollup-plugin-node-resolve.d.ts",

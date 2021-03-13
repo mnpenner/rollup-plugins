@@ -12,6 +12,7 @@ import runPlugin from '@mpen/rollup-plugin-run'
 import execPlugin, {RollupPluginExecutableOptions} from '@mpen/rollup-plugin-executable'
 // import renameNodeModules from 'rollup-plugin-rename-node-modules'
 import type {RollupOptions, WatcherOptions} from 'rollup'
+import replace from '@rollup/plugin-replace';
 
 // see also: https://github.com/rollup/rollup-starter-app
 
@@ -53,6 +54,16 @@ export default function rollupPresetTsapp(opts: RollupPresetTsappOptions = {}): 
             nodeResolve({
                 extensions: extensions,
                 // preferBuiltins: true,
+            }),
+            replace({
+                // https://github.com/rollup/rollup/issues/1507#issuecomment-340550539
+                delimiters: ['', ''],
+                preventAssignment: true,
+                values: {
+                    'require(\'readable-stream/transform\')': 'require(\'stream\').Transform',
+                    'require("readable-stream/transform")': 'require("stream").Transform',
+                    'readable-stream': 'stream'
+                }
             }),
             json({preferConst: true}),
             babel({
